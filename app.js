@@ -9,7 +9,7 @@ const app = express();
 let list = [];
 
 nodeCron.schedule(
-  "*/10 * * * *",
+  "*/2 * * * *",
   async function jobYouNeedToExecute() {
     let dataOfGSheet = [];
     try {
@@ -31,57 +31,57 @@ nodeCron.schedule(
       //   row[0] + " " + row[1] + " " + row[2] + " " + row[3] + " " + row[4]+" "+row[5]
       // );
       nodeCron.schedule(
-        `20 ${row[1]} ${row[2]} ${row[3]} ${row[4]} *`,
+        `${row[0]} ${row[1]} ${row[2]} ${row[3]} ${row[4]} *`,
         function jobYouNeedToExecute2() {
           console.log(
             "Executing Row..." + row + " at: " + new Date().toLocaleString()
-            );
-            
-            var time = new Date().toLocaleString();
-            let transporter = nodemailer.createTransport({
-              service: "Gmail",
-              auth: {
-                user: process.env.EMAIL, // generated ethereal user
-                pass: process.env.PASS, // generated ethereal password
-              },
-              tls: {
-                rejectUnauthorized: false,
-              },
+          );
+
+          var time = new Date().toLocaleString();
+          let transporter = nodemailer.createTransport({
+            service: "Gmail",
+            auth: {
+              user: process.env.EMAIL, // generated ethereal user
+              pass: process.env.PASS, // generated ethereal password
+            },
+            tls: {
+              rejectUnauthorized: false,
+            },
+          });
+
+          const receivers = [row[5], process.env.EMAIL]; // multiple receivers
+          console.log("Receivers are: " + receivers + " at: " + time);
+          receivers.forEach((receiver) => {
+            let mailOptions = {
+              from: "process.env.EMAIL",
+              to: receiver, // list of receivers
+              subject: "Testing purpose!!", // Subject line
+              text: `Hello ${receiver},\n Testing. \n\nEmal sent at:${time} \n \nThis is system generated mail. \n\nThanks & Regards\nTeekam Singh`,
+            };
+
+            transporter.sendMail(mailOptions, (error, info) => {
+              if (error) {
+                return console.log(error);
+              }
+              // console.log("Message sent: %s", info.messageId);
+              // console.log(
+              //   "Preview URL: %s",
+              //   nodemailer.getTestMessageUrl(info)
+              // );
+              console.log("Mail sent to: %s", receiver);
+              //   res.render('index.html');
             });
+          }); // End of forEach loop
 
-            const receivers = [row[5], process.env.EMAIL]; // multiple receivers
-            console.log("Receivers are: "+receivers+ " at: "+time);
-            receivers.forEach((receiver) => {
-              let mailOptions = {
-                from: "process.env.EMAIL",
-                to: receiver, // list of receivers
-                subject: "Testing purpose!!", // Subject line
-                text: `Hello ${receiver},\n Testing. \n\nEmal sent at:${time} \n \nThis is system generated mail. \n\nThanks & Regards\nTeekam Singh`,
-              };
-
-              transporter.sendMail(mailOptions, (error, info) => {
-                if (error) {
-                  return console.log(error);
-                }
-                // console.log("Message sent: %s", info.messageId);
-                // console.log(
-                //   "Preview URL: %s",
-                //   nodemailer.getTestMessageUrl(info)
-                // );
-                console.log("Mail sent to: %s", receiver);
-                //   res.render('index.html');
-              });
-            }); // End of forEach loop
-
-            list.push(
-              "Mail sent at: " +
-                new Date().toLocaleString() +
-                " to: " +
-                row[5] +
-                "- " +
-                row[6]
-            );
-        },
+          list.push(
+            "Mail sent at: " +
+              new Date().toLocaleString() +
+              " to: " +
+              row[5] +
+              "- " +
+              row[6]
+          );
+        }
       );
       
     });
