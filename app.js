@@ -53,10 +53,10 @@ nodeCron.schedule(
           console.log("Receivers are: " + receivers + " at: " + time);
           receivers.forEach((receiver) => {
             let mailOptions = {
-              from: "process.env.EMAIL",
+              from: process.env.EMAIL,
               to: receiver, // list of receivers
-              subject: "Testing purpose!!", // Subject line
-              text: `Hello ${receiver},\n Testing. \n\nEmal sent at:${time} \n \nThis is system generated mail. \n\nThanks & Regards\nTeekam Singh`,
+              subject: "Happy Birthday!", // Subject line
+              text: `Hi ${row[6]},\n${row[7]}. \n\nEmail sent automatically at: ${time} \n\nThanks & Regards\nTeekam Singh`,
             };
 
             transporter.sendMail(mailOptions, (error, info) => {
