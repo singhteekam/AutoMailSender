@@ -9,7 +9,7 @@ const app = express();
 let list = [];
 
 nodeCron.schedule(
-  "*/20 * * * *",
+  "*/10 * * * *",
   async function jobYouNeedToExecute() {
     let dataOfGSheet = [];
     try {
